@@ -9,8 +9,6 @@
 
 #define PROGRAM_NAME "Start"
 
-typedef uint32_t SDL_WindowID;  // SDL_WindowID is not in the headers, but should be UInt32
-
 /* A simple function that will read a file into an allocated char pointer buffer */
 char* filetobuf(char *file)
 {
@@ -40,10 +38,10 @@ void sdldie(char *msg)
     exit(1);
 }
 
-void setupwindow(SDL_WindowID *window, SDL_GLContext *context)
+void setupwindow(SDL_Window* & window, SDL_GLContext & context)
 {
 
-    // C++ Complains about character literals, so stick them in an array 
+    // C++ Complains about character literals, so stick them in an array
     char error1[] = "Unable to initialize SDL";
     char error2[] = "Unable to create window";
 
@@ -87,24 +85,28 @@ void setupwindow(SDL_WindowID *window, SDL_GLContext *context)
 
     /* Create our window centered at 512x512 resolution */
     printf("Creating the Window - prep for centered OpenGL Window.\n");
-    *window = SDL_CreateWindow(PROGRAM_NAME, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
+    window = SDL_CreateWindow(PROGRAM_NAME, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         512, 512, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-    if (!*window) /* Die if creation failed */
+    if (!window) /* Die if creation failed */
         sdldie(error2);
+
+
 
     /* Create our opengl context and attach it to our window */
     printf("Get the OpenGL window context.\n");
-    *context = SDL_GL_CreateContext(*window);
+    context = SDL_GL_CreateContext(window);
+
+
 
     printf("Synchronize with the display V-Sync.\n");
     /* This makes our buffer swap syncronized with the monitor's vertical refresh */
     SDL_GL_SetSwapInterval(1);
 
-    
+
     printf("Finished setupwindow\n");
 }
 
-void drawscene(SDL_WindowID *window)
+void drawscene(SDL_Window* & window)
 {
     int i; /* Simple iterator */
     GLuint vao, vbo[2]; /* Create handles for our Vertex Array Object and two Vertex Buffer Objects */
@@ -333,7 +335,7 @@ void drawscene(SDL_WindowID *window)
     free(fragmentsource);
 }
 
-void destroywindow(SDL_Window *window, SDL_GLContext context)
+void destroywindow(SDL_Window* & window, SDL_GLContext & context)
 {
     SDL_GL_DeleteContext(context);
     SDL_DestroyWindow(window);
@@ -341,13 +343,13 @@ void destroywindow(SDL_Window *window, SDL_GLContext context)
 }
 
 /* Our program's entry point */
-int main(int argc, char *argv[])
+int main()
 {
-    SDL_WindowID mainwindow; /* Our window handle */
+    SDL_Window* mainwindow; /* Our window handle */
     SDL_GLContext maincontext; /* Our opengl context handle */
 
     /* Create our window, opengl context, etc... */
-    setupwindow(&mainwindow, &maincontext);
+    setupwindow(mainwindow, maincontext);
 
     /* Call our function that performs opengl operations */
     drawscene(mainwindow);

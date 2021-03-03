@@ -1,8 +1,8 @@
 
-CC = gcc
+CC = g++
 
 start:	start.c
-	$(CC) start.c -o  start -lSDL2 -lGLESv2 -lm 
+	$(CC) -Wall -Wextra start.c -o  start -lSDL2 -lGLESv2 -lm -g
 
 clean:
 	touch *.c
